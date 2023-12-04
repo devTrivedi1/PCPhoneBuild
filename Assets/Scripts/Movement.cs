@@ -5,26 +5,25 @@ using UnityEngine;
 public class Movement : MonoBehaviour
 {
     [SerializeField] float speed = 10.0f;
-    float moveHorizontal;
-    float moveVertical;
-    Vector3 movement;
+    Rigidbody rb;
     [SerializeField] Transform position;
     void Start()
     {
-
+        rb = GetComponent<Rigidbody>();
     }
 
     void Update()
     {
-        if (Input.GetKey(KeyCode.U))
-        {
-            Instantiate(GameObject.CreatePrimitive(PrimitiveType.Cylinder), position.position, Quaternion.identity);
-        }
-        MovePlayer();
+
+        MovePlayer();   
     }
 
     void MovePlayer()
     {
+
+        float moveHorizontal = Input.GetAxis("Horizontal");
+        float moveVertical = Input.GetAxis("Vertical");
+
         if (Input.touchCount > 0)
         {
             Touch touch = Input.GetTouch(0);
@@ -34,21 +33,9 @@ public class Movement : MonoBehaviour
             moveHorizontal = touchHorizontal * speed;
             moveVertical = touchVertical * speed;
         }
-
-        movement = GetDirection();
-        Move(movement * speed);
-    }
-
-    private Vector3 GetDirection()
-    {
-        moveHorizontal = Input.GetAxis("Horizontal");
-        moveVertical = Input.GetAxis("Vertical");
         Vector3 direction = new Vector3(moveHorizontal, 0, moveVertical);
-        return direction;
+        rb.AddForce(direction * speed);
+
     }
 
-    private void Move(Vector3 direction)
-    {
-        GetComponent<Rigidbody>().AddForce(direction);
-    }
 }
